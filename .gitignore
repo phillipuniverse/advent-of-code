@@ -1,0 +1,23 @@
+# JS
+.env
+node_modules/
+yarn-error.log
+
+# Java
+target/
+.classpath
+.project
+.settings
+.idea
+*.iml
+.metadata
+*.ipr
+bin/
+**/dist
+*.log
+.vagrant/
+.factorypath
+.sts4-cache
+rebel.xml
+rebel-remote.xml
+*.rebel*
