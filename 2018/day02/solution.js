@@ -14,3 +14,35 @@ export const containsExactly = (str, count) => {
 const incrementInTable = (char, table) => {
   table[char] == undefined ? table[char] = 1: ++table[char];
 }
+
+export const part2 = input => {
+  let matchingSingleDifferenceIds;
+  input.forEach(id => {
+    input.forEach(comparingId => {
+      if (countDiffs(id, comparingId) === 1) {
+        matchingSingleDifferenceIds = intersection(id, comparingId);
+        return;
+      }
+    });
+  });
+  return matchingSingleDifferenceIds;
+}
+
+export const intersection = (str1, str2) => {
+  return Array.from(str1)
+    .filter((char, idx) => char == str2.charAt(idx))
+    .join('');
+}
+
+/**
+ * Assumes both IDs are the same length
+ */
+export const countDiffs = (id, comparisonId) => {
+  let diffs = 0;
+  Array.from(id).forEach((char, idx) => {
+    // I think this is my favorite thing about Javascript. 1 + false == 1, and
+    // 1 + true == 2!
+    diffs += (char != comparisonId.charAt(idx));
+  });
+  return diffs;
+}
