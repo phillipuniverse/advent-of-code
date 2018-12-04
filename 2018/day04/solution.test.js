@@ -1,4 +1,4 @@
-import { parseAndSort, parseLine, part1 } from './solution.js';
+import { parseAndSort, parseLine, part1, part2 } from './solution.js';
 var fs = require('fs');
 
 test("Sorts dates", () => {
@@ -45,4 +45,10 @@ test("Solution to part 1", () => {
   expect(part1(fs.readFileSync('testinput', 'utf8')
       .split('\n')
       .slice(0, -1))).toEqual(240)
+});
+
+test("Solution to part 2", () => {
+  expect(part2(fs.readFileSync('testinput', 'utf8')
+      .split('\n')
+      .slice(0, -1))).toEqual(4455)
 });

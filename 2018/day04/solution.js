@@ -1,6 +1,23 @@
 var _ = require('lodash');
 
 export const part1 = input => {
+  let sleepAnalysis = analyzeGuards(input);
+  let snoozingGuard = sleepAnalysis.reduce((acc, cur, idx) => cur.totalSleep > acc.totalSleep ? cur : acc );
+  return new Number(snoozingGuard.id) * snoozingGuard.sleepMarkers.reduce(longestMinuteAsleep);
+}
+
+export const part2 = input => {
+  let sleepAnalysis = analyzeGuards(input);
+  let mostSleptInMinute = ((acc, cur, idx, arr) => Math.max(cur, acc));
+
+  let snoozingGuard = sleepAnalysis.reduce((acc, cur, idx) => cur.sleepMarkers.reduce(mostSleptInMinute) > acc.sleepMarkers.reduce(mostSleptInMinute) ? cur : acc );
+
+  return new Number(snoozingGuard.id) * snoozingGuard.sleepMarkers.reduce(longestMinuteAsleep);
+}
+
+const longestMinuteAsleep = (acc, cur, idx, arr) => cur > arr[acc] ? idx : acc;
+
+export const analyzeGuards = input => {
   let sorted = parseAndSort(input);
 
   let sleepAnalysis = [];
@@ -33,11 +50,9 @@ export const part1 = input => {
       guardAnalysis.totalSleep += timeAsleep;
     }
   }
-
-  let snoozingGuard = sleepAnalysis.reduce((acc, cur, idx) => cur.totalSleep > acc.totalSleep ? cur : acc );
-  let longestMinuteAsleep = snoozingGuard.sleepMarkers.reduce((acc, cur, idx, arr) => cur > arr[acc] ? idx : acc);
-  return new Number(snoozingGuard.id) * longestMinuteAsleep;
+  return sleepAnalysis;
 }
+
 export const parseAndSort = input => {
   // put everything in UTC, I don't need Node to convert it
   return input.map(parseLine)
