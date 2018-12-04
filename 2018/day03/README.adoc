@@ -1,0 +1,9 @@
+= Advent of Code 2018 Day 1
+
+== Running
+
+Simply `yarn install && yarn solve` in this directory.
+
+== Tests
+
+Implemented using Jest, run with `yarn test` or `yarn test:watch`.
