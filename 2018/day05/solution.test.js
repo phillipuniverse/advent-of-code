@@ -1,14 +1,18 @@
-import { part1 } from './solution.js';
+import { getReactedPolymer, findMinimumPolymerLength } from './solution.js';
 var fs = require('fs');
 
 test("Reacts aA", () => {
-  expect(part1('aA')).toEqual('');
+  expect(getReactedPolymer('aA')).toEqual('');
 });
 
 test("Reacts abBA", () => {
-  expect(part1('abBA')).toEqual('');
+  expect(getReactedPolymer('abBA')).toEqual('');
 });
 
 test("Reacts dabAcCaCBAcCcaDA", () => {
-  expect(part1('dabAcCaCBAcCcaDA')).toEqual('dabCBAcaDA');
+  expect(getReactedPolymer('dabAcCaCBAcCcaDA')).toEqual('dabCBAcaDA');
+});
+
+test("Minimum polymer for dabAcCaCBAcCcaDA", () => {
+  expect(findMinimumPolymerLength('dabAcCaCBAcCcaDA')).toEqual(4);
 });

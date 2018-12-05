@@ -1,8 +1,14 @@
-import { part1, part2 } from './solution.js'
+import { getReactedPolymer, findMinimumPolymerLength } from './solution.js'
 
 var fs = require('fs');
 
 let input = fs.readFileSync('input', 'utf8').trim();
-console.log("Initial size: " + input.length);
-console.log("Part 1: " + part1(input) + " with size " + part1(input).length);
-// console.log("Part 2: " + part2(input));
+console.time("Part 1 timer");
+let polymerLength = getReactedPolymer(input).length;
+console.timeEnd("Part 1 timer")
+console.log(`Part 1 answer: ${polymerLength}`);
+
+console.time("Part 2 timer");
+let minimumPolymerLength = findMinimumPolymerLength(input);
+console.timeEnd("Part 2 timer");
+console.log(`Part 2 answer: ${minimumPolymerLength}`);
