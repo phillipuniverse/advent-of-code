@@ -7,3 +7,28 @@ Simply `yarn install && yarn solve` in this directory.
 == Tests
 
 Implemented using Jest, run with `yarn test` or `yarn test:watch`.
+
+== Results
+
+Using string concatenation, this was the timing:
+
+[source,console]
+----
+Part 1 timer: 71.368ms
+Part 1 answer: 9288
+Part 2 timer: 1509.650ms
+Part 2 answer: 5844
+✨  Done in 2.19s.
+----
+
+Using a stack and peeking back at it to add the polymer:
+
+[source,console]
+----
+Part 1 timer: 3.602ms
+Part 1 answer: 9288
+Part 2 timer: 29.746ms
+Part 2 answer: 5844
+✨  Done in 0.72s.
+----
+

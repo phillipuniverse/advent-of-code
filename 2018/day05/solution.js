@@ -1,25 +1,26 @@
 var _ = require('lodash');
 
-export const getReactedPolymer = input => {
-  let processed = input;
+export const getReactedPolymerLength = input => {
   let idx = 0;
-  while (idx < processed.length - 1) {
-    if (Math.abs(processed.charCodeAt(idx) - processed.charCodeAt(idx + 1)) == 32) {
-      processed = processed.substring(0, idx) + processed.substring(idx + 2);
-      idx--;
+  let final = [];
+  while (idx < input.length) {
+    // reacting, pop it off
+    if (final.length && Math.abs(final[final.length-1].charCodeAt() - input.charCodeAt(idx)) == 32) {
+      final.pop();
     } else {
-      idx++;
+      final.push(input[idx]);
     }
+    idx++;
   }
-  return processed;
+  return final.length;
 }
 
 export const findMinimumPolymerLength = input => {
   let minPolymerLength = Number.MAX_SAFE_INTEGER;
   'abcdefghijklmnopqrstuvwxyz'.split('').forEach(c => {
-    let polymer = getReactedPolymer(input.replace(new RegExp(c, 'gi'), ''));
-    if (polymer.length < minPolymerLength) {
-      minPolymerLength = polymer.length;
+    let len = getReactedPolymerLength(input.replace(new RegExp(c, 'gi'), ''));
+    if (len < minPolymerLength) {
+      minPolymerLength = len;
     }
   });
 
