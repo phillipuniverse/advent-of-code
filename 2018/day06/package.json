@@ -1,0 +1,27 @@
+{
+  "name": "aoc-2018-day05",
+  "version": "1.0.0",
+  "main": "solution.js",
+  "license": "WTFPL",
+  "repository": "https://github.com/phillipuniverse/advent-of-code",
+  "author": "Phillip Verheyden (phillipuniverse)",
+  "scripts": {
+    "solve": "babel-node solve.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/node": "^7.0.0",
+    "babel-cli": "^6.26.0",
+    "babel-jest": "^23.6.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "23.6.0",
+    "lodash": "^4.17.11"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ]
+  }
+}
