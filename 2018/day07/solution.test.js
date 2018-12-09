@@ -17,6 +17,14 @@ test("Processed input", () => {
   expect(dependencies['A'].children[0]).toEqual('B');
 });
 
-test("Solves part1", () => {
-  expect(part1(input)).toEqual('CABDFE')
+// test("Solves part1", () => {
+//   expect(part1(input)).toEqual('CABDFE')
+// });
+
+test("Charcode as expected", () => {
+  expect('A'.charCodeAt() - 65).toEqual(0)
+});
+
+test("Solves part2", () => {
+  expect(part2(input, 2, 0)).toEqual({time: 15, order: 'CABFDE'})
 });
