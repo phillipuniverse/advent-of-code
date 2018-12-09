@@ -7,28 +7,22 @@ export const part1 = input => {
   let bounds = computeBounds(input);
   // left
   // right
-  let board = _.times(bounds.maxX, -1);
-  for (let i = 0; i < board.length; i++) {
-    board[i] = _.times(bounds.maxY, -1);
-  }
+  let board = Array(bounds.maxY + 1)
+      .fill(-2)
+      .map((e, i) => Array(bounds.maxX + 1).fill(-2));
 
-  // console.log(`Initial board: ${JSON.stringify(board)}`)
   // plot the points on the board
   for (let i = 0; i < points.length; i++) {
     // plot the points
     let point = points[i]
-    let y = board[point.x];
-    if (y === undefined) {
-      y = [];
-      board[point.x] = y;
-    }
     // fill the board with the board number
-    board[point.x][point.y] = i;
+    console.log(`Point ${i} to (${point.x}, ${point.y}) `)
+    board[point.y][point.x] = i;
   }
-  // console.log(`Plotted board: ${JSON.stringify(board)}`)
+  console.log(`Plotted board: ${cTable.getTable(board)}`)
   // go through the board and mark the point with the least distance
-  for (let x = 0; x < board.length; x++) {
-    for (let y = 0; y < board[x].length; y++) {
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board[y].length; x++) {
       let current = {x: x, y: y}
       let shortestPoint = -1;
       let dist = Number.MAX_SAFE_INTEGER
@@ -42,34 +36,38 @@ export const part1 = input => {
           shortestPoint = -1;
         }
       }
-      board[x][y] = shortestPoint;
+      board[y][x] = shortestPoint;
     }
   }
   // console.log(cTable.getTable(board))
   // now that everything is placed, add up the board
-  let distances = new Array(points.length);
+  let distances = new Array(points.length).fill(0);
   _.fill(distances, 0);
-  for (let x = 0; x < board.length; x++) {
-    for (let y = 0; y < board[x].length; y++) {
+  console.log(cTable.getTable(board))
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board[y].length; x++) {
       // if I'm at the boundary, the area of this point is infinity
-      if (isBoundary({x: x, y: y}, bounds) && board[x][y] != -1) {
-        distances[board[x][y]] == Infinity
-      } else if (board[x][y] != -1) {
+      // console.log(`(${y}, ${x}) is at a boundary ${isBoundary({x: x, y: y}, board)}`)
+      if (isBoundary({x: x, y: y}, board) && board[y][x] != -1) {
+        // console.log(`Setting ${board[y][x]} to -1`)
+        distances[board[y][x]] = -1
+      } else if (board[y][x] != -1 && distances[board[y][x]] != -1) {
         // the point index is stored in the board
-        distances[board[x][y]]++
+        distances[board[y][x]]++
       }
     }
   }
   // filter the boundary points, not considering because Infinity
-  distances = distances.filter((el, idx) => el != Infinity);
+  console.log(`Unfiltered distances: ${distances}`)
+
+  distances = distances.filter((el, idx) => el != -1);
   console.log(`Distances: ${distances}`)
   return distances.reduce((acc, el) => Math.max(acc, el));
 }
 
-export const isBoundary = (point, bounds) => {
-  let res = _.isEqual(point.x, bounds.maxX) || _.isEqual(point.x, bounds.minX)
-    || _.isEqual(point.y, bounds.maxY) || _.isEqual(point.y, bounds.minY);
-  return res;
+export const isBoundary = (point, board) => {
+  return point.y == 0 || point.y == board.length - 1
+    || point.x == 0 || point.x == board[0].length - 1;
 }
 
 export const otherPoints = (point, allPoints) => {
@@ -91,12 +89,13 @@ export const computeBounds = coordinates => {
       bounds.minX = c.x < bounds.minX ? c.x : bounds.minX;
       bounds.minY = c.y < bounds.minY ? c.y : bounds.minY;
     })
+  console.log(`Bounds: ${JSON.stringify(bounds)}`)
   return bounds;
 }
 
 export const parse = raw => {
-  let x = new Number(raw.substring(0, raw.indexOf(',')));
-  let y = new Number(raw.substring(raw.indexOf(',') + 1));
+  let x = parseInt(raw.substring(0, raw.indexOf(',')), 10);
+  let y = parseInt(raw.substring(raw.indexOf(',') + 1), 10);
   return {
     x: x,
     y: y
