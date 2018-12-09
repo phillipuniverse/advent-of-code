@@ -65,6 +65,30 @@ export const part1 = input => {
   return distances.reduce((acc, el) => Math.max(acc, el));
 }
 
+export const part2 = (input, lessThanDistance) => {
+  let points = input.map(parse);
+  let bounds = computeBounds(input);
+  let area = 0;
+  let board = Array(bounds.maxY + 1)
+      .fill(-2)
+      .map((e, i) => Array(bounds.maxX + 1).fill(-2));
+
+  board.forEach((yel, yi) => {
+    yel.forEach((xel, xi) => {
+
+      let distanceToPoints = 0;
+      points.forEach(p => {
+        distanceToPoints += distance({x: xi, y: yi}, p)
+      })
+      console.log(`Total distance to all points from (${xi}, ${yi}) is ${distanceToPoints}`)
+      if (distanceToPoints < lessThanDistance) {
+        area++
+      }
+    })
+  })
+  return area
+}
+
 export const isBoundary = (point, board) => {
   return point.y == 0 || point.y == board.length - 1
     || point.x == 0 || point.x == board[0].length - 1;

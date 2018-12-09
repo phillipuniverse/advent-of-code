@@ -1,4 +1,4 @@
-import { part1, parse, computeBounds, areaAbove, areaBelow, otherPoints, computeArea } from './solution.js';
+import { part1, part2, parse, computeBounds, otherPoints, computeArea } from './solution.js';
 var fs = require('fs');
 
 let coords = fs.readFileSync('testinput', 'utf8')
@@ -13,6 +13,10 @@ test("Bounds", () => {
   expect(computeBounds(coords)).toEqual({maxX: 8, maxY: 9, minX: 1, minY: 1});
 });
 
-test("Solves demo", () => {
+test("Solves demo part1", () => {
   expect(part1(coords)).toEqual(17);
+});
+
+test("Solves part2", () => {
+  expect(part2(coords, 32)).toEqual(16);
 });

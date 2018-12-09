@@ -1,4 +1,4 @@
-import { part1 } from './solution.js'
+import { part1, part2 } from './solution.js'
 
 var fs = require('fs');
 
@@ -8,7 +8,7 @@ let maxSize = part1(input);
 console.timeEnd("Part 1 timer")
 console.log(`Part 1 answer: ${maxSize}`);
 
-// console.time("Part 2 timer");
-// let minimumPolymerLength = findMinimumPolymerLength(input);
-// console.timeEnd("Part 2 timer");
-// console.log(`Part 2 answer: ${minimumPolymerLength}`);
+console.time("Part 2 timer");
+let area = part2(input, 10000);
+console.timeEnd("Part 2 timer");
+console.log(`Part 2 answer: ${area}`);
