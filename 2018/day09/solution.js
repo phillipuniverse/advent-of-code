@@ -8,24 +8,23 @@ export const playGame = game => {
   let marbles = [0]
   let currentMarble = 0
   let scores = Array(game.players).fill(0)
-  let lastMarbleWorth = 0
-  let marbleNumber = 0
+  // already set 0, next marble value is 1
+  let marbleValue = 1
   let player = 0
-  while (lastMarbleWorth != game.lastMarbleWorth) {
+  while (marbleValue <= game.lastMarbleWorth) {
     let position = marbles.findIndex(m => m == currentMarble)
     console.log(`Current marble ${currentMarble} position is ${position}`)
-    marbleNumber++
+    console.log(`Handling marble ${marbleValue}`)
 
     // about to place the special marble, do some scoring
-    if (marbleNumber % 23 == 0) {
-      lastMarbleWorth = marbleNumber
+    if (marbleValue % 23 == 0) {
       // remove 1 item at a could-be-negative index (goes from back)
       let removed = marbles.splice(position - 7, 1)[0]
-      lastMarbleWorth += removed
-      console.log(`Removed marble ${removed}, score of marble ${marbleNumber} is ${lastMarbleWorth}`)
+      console.log(`Removed marble ${removed}`)
 
       // add the current marble to the current player's score
-      scores[player] += lastMarbleWorth
+      scores[player] += (removed + marbleValue)
+      console.log(`Scores: ${scores}`)
       // new current is directly to the right of the
       // one I just removed. This just so happens to be exactly where
       // I removed the marble, now that's the new marble
@@ -34,11 +33,12 @@ export const playGame = game => {
     } else {
       // normal operation, place a marble
       let placement = nextPosition(position, marbles.length)
-      console.log(`Placing marble ${marbleNumber} at position ${placement}`)
-      marbles.splice(placement, 0, marbleNumber)
+      console.log(`Placing marble ${marbleValue} at position ${placement}`)
+      marbles.splice(placement, 0, marbleValue)
       console.log(`Current board is ${marbles}`)
-      currentMarble = marbleNumber
+      currentMarble = marbleValue
     }
+    marbleValue++
     player = (player + 1) % game.players
   }
   console.log(`Final scores: ${scores}`)
