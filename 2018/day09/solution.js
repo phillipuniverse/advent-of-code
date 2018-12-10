@@ -5,38 +5,53 @@ export const part1 = input => {
 }
 
 export const playGame = game => {
-  let marbles = [0]
-  let currentMarble = 0
+  let current = {
+    val: 0
+  }
+  current.left = current
+  current.right = current
+  let head = current
   let scores = Array(game.players).fill(0)
   // already set 0, next marble value is 1
   let marbleValue = 1
   let player = 0
   while (marbleValue <= game.lastMarbleWorth) {
-    let position = marbles.findIndex(m => m == currentMarble)
-    console.log(`Current marble ${currentMarble} position is ${position}`)
+    console.log(`Current marble ${current.val}`)
     console.log(`Handling marble ${marbleValue}`)
 
     // about to place the special marble, do some scoring
     if (marbleValue % 23 == 0) {
       // remove 1 item at a could-be-negative index (goes from back)
-      let removed = marbles.splice(position - 7, 1)[0]
-      console.log(`Removed marble ${removed}`)
+      let removed = current
+      _.times(7, (idx) => {
+        removed = removed.left
+      })
+      // remove it by resetting pointers
+      removed.left.right = removed.right
+      removed.right.left = removed.left
+      console.log(`Removed marble ${removed.val}`)
 
       // add the current marble to the current player's score
-      scores[player] += (removed + marbleValue)
+      scores[player] += (removed.val + marbleValue)
       console.log(`Scores: ${scores}`)
       // new current is directly to the right of the
-      // one I just removed. This just so happens to be exactly where
-      // I removed the marble, now that's the new marble
-      currentMarble = marbles[position - 7]
-      console.log(`New current marble ${currentMarble}`)
+      // one I just removed
+      current = removed.right
+      console.log(`New current marble ${current.val}`)
     } else {
       // normal operation, place a marble
-      let placement = nextPosition(position, marbles.length)
-      console.log(`Placing marble ${marbleValue} at position ${placement}`)
-      marbles.splice(placement, 0, marbleValue)
-      console.log(`Current board is ${marbles}`)
-      currentMarble = marbleValue
+      console.log(`Placing marble ${marbleValue}`)
+      let leftMost = current.right
+      let rightMost = current.right.right
+      let placed = {
+        val: marbleValue,
+        left: leftMost,
+        right: rightMost
+      }
+      leftMost.right = placed
+      rightMost.left = placed
+      // console.log(`Current board is: ${getBoardOutput(head)}`)
+      current = placed
     }
     marbleValue++
     player = (player + 1) % game.players
@@ -45,18 +60,14 @@ export const playGame = game => {
   return _.max(scores)
 }
 
-export const nextPosition = (currentPosition, totalMarbles) => {
-  // clockwise increases by 1
-  let left = currentPosition + 1
-  // if the next position goes off the end, reset to the beginning
-  // by subtracting where I just got to from the length
-  let maxPosition = totalMarbles - 1
-  if (left > maxPosition) {
-    left = totalMarbles - left
+export const getBoardOutput = head => {
+  let output = `${head.val}`
+  let next = head.right
+  while (next.val != head.val) {
+    output += `, ${next.val}`
+    next = next.right
   }
-  // 1 after what I just determined as the left-most marble I'm about
-  // to place
-  return left + 1
+  return output
 }
 
 export const parse = input => {

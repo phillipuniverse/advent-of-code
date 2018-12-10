@@ -4,7 +4,7 @@ var fs = require('fs');
 
 let input = fs.readFileSync('input', 'utf8').trim();
 console.time("Part 1 timer");
-let maxScore = part1('10 players; last marble is worth 1618 points');
+let maxScore = part1(input);
 console.timeEnd("Part 1 timer")
 console.log(`Part 1 answer: ${maxScore}`);
 
