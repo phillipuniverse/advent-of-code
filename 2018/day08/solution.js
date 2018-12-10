@@ -1,10 +1,12 @@
 var _ = require('lodash');
 
-export const part1 = input => {
+export const part1And2 = input => {
   let metadataSum = 0
   let cursor = 0
   let nodeNum = 1
   let toProcess = []
+  let tree = undefined
+  let parent = undefined
   while (cursor < input.length) {
     // processing the current one
     if (toProcess.length) {
@@ -16,6 +18,7 @@ export const part1 = input => {
           let md = parseInt(input[cursor])
           console.log(`Adding metadata ${md} for node ${currentNode.id}`)
           metadataSum += md;
+          currentNode.metadata.push(md)
           currentNode.metadataLeft--
           cursor++
         }
@@ -24,21 +27,53 @@ export const part1 = input => {
         continue
       } else {
         currentNode.childrenLeft--
+        parent = currentNode
       }
     }
     console.log(`Queueing node ${nodeNum} at index ${cursor}`)
     let node = {
       id: nodeNum,
       childrenLeft: parseInt(input[cursor]),
-      metadataLeft: parseInt(input[cursor+1])
+      metadataLeft: parseInt(input[cursor+1]),
+      children: [],
+      metadata: []
+    }
+    if (parent) {
+      parent.children.push(node)
+    }
+    if (!tree) {
+      tree = parent
     }
     nodeNum++
     toProcess.push(node)
     // process the next node entry
     cursor += 2
   }
-  return metadataSum
+  console.log(`Tree: ${JSON.stringify(tree)}`)
+
+  // process the tree
+  let totalValue = calculateValue(tree)
+
+  return {
+    metadataSum: metadataSum,
+    value: totalValue
+  }
 }
 
-export const part2 = input => {
+export const calculateValue = node => {
+  let sum = 0
+  if (node.children.length == 0) {
+    sum = _.sum(node.metadata)
+  } else {
+    // I have children, so metadata are indexes of the values of each one
+    node.metadata.forEach(md => {
+      // metadata is 1-indexed, so need to subtract
+      let child = node.children[md - 1]
+      if (child) {
+        sum += calculateValue(child)
+      }
+    })
+  }
+  console.log(`Value of node ${node.id} is ${sum}`)
+  return sum
 }

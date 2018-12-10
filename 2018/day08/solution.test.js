@@ -1,4 +1,4 @@
-import { part1, part2 } from './solution.js';
+import { part1And2 } from './solution.js';
 var fs = require('fs');
 
 let input = fs.readFileSync('testinput', 'utf8')
@@ -12,5 +12,9 @@ test("Tokenized", () => {
 });
 
 test("Finds metadata sum", () => {
-  expect(part1(input)).toEqual(138)
+  expect(part1And2(input).metadataSum).toEqual(138)
+});
+
+test("Solves part 2", () => {
+  expect(part1And2(input).value).toEqual(66)
 });
