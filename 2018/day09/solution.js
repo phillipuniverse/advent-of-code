@@ -16,8 +16,8 @@ export const playGame = game => {
   let marbleValue = 1
   let player = 0
   while (marbleValue <= game.lastMarbleWorth) {
-    console.log(`Current marble ${current.val}`)
-    console.log(`Handling marble ${marbleValue}`)
+    // console.log(`Current marble ${current.val}`)
+    // console.log(`Handling marble ${marbleValue}`)
 
     // about to place the special marble, do some scoring
     if (marbleValue % 23 == 0) {
@@ -29,18 +29,20 @@ export const playGame = game => {
       // remove it by resetting pointers
       removed.left.right = removed.right
       removed.right.left = removed.left
-      console.log(`Removed marble ${removed.val}`)
+      // console.log(`Removed marble ${removed.val}`)
 
       // add the current marble to the current player's score
       scores[player] += (removed.val + marbleValue)
-      console.log(`Scores: ${scores}`)
+      // console.log(`Scores: ${scores}`)
       // new current is directly to the right of the
       // one I just removed
       current = removed.right
-      console.log(`New current marble ${current.val}`)
+      let pointerToRemove = {removal: removed}
+      delete pointerToRemove.removal
+      // console.log(`New current marble ${current.val}`)
     } else {
       // normal operation, place a marble
-      console.log(`Placing marble ${marbleValue}`)
+      // console.log(`Placing marble ${marbleValue}`)
       let leftMost = current.right
       let rightMost = current.right.right
       let placed = {
@@ -56,7 +58,7 @@ export const playGame = game => {
     marbleValue++
     player = (player + 1) % game.players
   }
-  console.log(`Final scores: ${scores}`)
+  // console.log(`Final scores: ${scores}`)
   return _.max(scores)
 }
 
