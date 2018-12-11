@@ -12,6 +12,15 @@ describe("Part 1 solvers", () => {
   },{
     in: '13 players; last marble is worth 7999 points',
     out: 146373
+  },{
+    in: '17 players; last marble is worth 1104 points',
+    out: 2764
+  },{
+    in: '21 players; last marble is worth 6111 points',
+    out: 54718
+  },{
+    in: '30 players; last marble is worth 5807 points',
+    out: 37305
   }].forEach(el => {
     test(el.in, () =>{
       expect(part1(el.in)).toEqual(el.out)
