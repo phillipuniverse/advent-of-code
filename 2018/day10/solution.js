@@ -10,9 +10,9 @@ export const part1 = input => {
     let newBounds = computeBounds(newPoints)
     if (newBounds.area >= bounds.area) {
       console.log(`Found at tick ${tick}`)
-      let message = visualize(points, bounds)
-      console.log(`\n\n${message}\n\n`)
-      return message
+      let msg = visualize(points, bounds)
+      console.log(`\n\n${msg}\n\n`)
+      return ''
     }
     points = newPoints
     tick++
@@ -26,8 +26,8 @@ export const computeBounds = points => {
     top: _.minBy(points, p => p.position.y).position.y,
     bottom: _.maxBy(points, p => p.position.y).position.y
   }
-  let width = Math.abs(bounds.left) + bounds.right
-  let height = Math.abs(bounds.top) + bounds.bottom
+  let width = bounds.right - bounds.left
+  let height = bounds.bottom - bounds.top
   bounds.area = width * height
   return bounds
 }
