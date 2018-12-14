@@ -1,7 +1,7 @@
 import { part1 } from './solution.js'
 
 var fs = require('fs');
-let input = fs.readFileSync('testinput', 'utf8')
+let input = fs.readFileSync('input', 'utf8')
   .trim()
   .split('\n');
 

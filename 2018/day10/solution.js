@@ -4,7 +4,6 @@ export const part1 = input => {
   let points = input.map(parse)
 
   let tick = 0
-  let previousPoints = []
   while (true) {
     let bounds = computeBounds(points)
     let newPoints = points.map(move)
@@ -15,7 +14,6 @@ export const part1 = input => {
       console.log(`\n\n${message}\n\n`)
       return message
     }
-    previousPoints.push(points)
     points = newPoints
     tick++
   }
@@ -56,7 +54,7 @@ export const visualize = (points, bounds) => {
         out += '#'
       } else {
         // empty space
-        out += '.'
+        out += ' '
       }
     }
     out += '\n'
