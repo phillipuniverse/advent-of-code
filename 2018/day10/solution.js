@@ -46,7 +46,7 @@ export const move = point => {
 }
 
 export const visualize = (points, bounds) => {
-  let out = ''
+  let out = ' '
   for (let y = bounds.top; y <= bounds.bottom; y++) {
     for (let x = bounds.left; x <= bounds.right; x++) {
       if (points.find(p => p.position.x == x && p.position.y == y)) {
