@@ -38,10 +38,7 @@ export const move = point => {
       x: point.position.x + point.velocity.x,
       y: point.position.y + point.velocity.y
     },
-    velocity: {
-      x: point.velocity.x,
-      y: point.velocity.y
-    }
+    velocity: point.velocity
   }
 }
 
