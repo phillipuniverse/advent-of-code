@@ -1,4 +1,4 @@
-import { part1, getRackId, getPowerLevel, initializeGrid } from './solution.js';
+import { maxPower, getRackId, getPowerLevel, initializeGrid, part2 } from './solution.js';
 
 describe('Power Levels', () => {
   /**
@@ -24,22 +24,52 @@ describe('Power Levels', () => {
 
 describe('Fills grid correctly', () => {
   test('Bounding box with serial 18 exists', () => {
-    expect(initializeGrid(18)[32][44]).toEqual(4)
-    expect(initializeGrid(18)[33][44]).toEqual(4)
-    expect(initializeGrid(18)[34][44]).toEqual(4)
-    expect(initializeGrid(18)[32][45]).toEqual(3)
-    expect(initializeGrid(18)[33][45]).toEqual(3)
-    expect(initializeGrid(18)[34][45]).toEqual(4)
-    expect(initializeGrid(18)[32][46]).toEqual(1)
-    expect(initializeGrid(18)[33][46]).toEqual(2)
-    expect(initializeGrid(18)[34][46]).toEqual(4)
+    let grid = initializeGrid(18)
+    expect(grid[32][44]).toEqual(4)
+    expect(grid[33][44]).toEqual(4)
+    expect(grid[34][44]).toEqual(4)
+    expect(grid[32][45]).toEqual(3)
+    expect(grid[33][45]).toEqual(3)
+    expect(grid[34][45]).toEqual(4)
+    expect(grid[32][46]).toEqual(1)
+    expect(grid[33][46]).toEqual(2)
+    expect(grid[34][46]).toEqual(4)
   })
 })
 
-test('Solves sample serial 18', () => {
-  expect(part1(18)).toEqual('Coordinates: 33,45 with power: 29')
+describe('Solves samples part 1', () => {
+  test('Serial 18 300x300', () => {
+    expect(maxPower(18, 3, 3)).toEqual({
+      coordinates: '33,45',
+      power: 29,
+      size: 3
+    })
+  })
+
+  test('Serial 42 300x300', () => {
+    expect(maxPower(42, 3, 3)).toEqual({
+      coordinates: '21,61',
+      power: 30,
+      size: 3
+    })
+  })
+
 })
 
-test('Solves sample serial 42', () => {
-  expect(part1(42)).toEqual('Coordinates: 21,61 with power: 30')
+describe('Solves samples part 2', () => {
+  // test('Serial 18', () => {
+  //   expect(maxPower(18)).toEqual({
+  //     coordinates: '90,296',
+  //     power: 113,
+  //     size: 16
+  //   })
+  // })
+
+  // test('Serial 42', () => {
+  //   expect(maxPower(42)).toEqual({
+  //     coordinates: '232,251',
+  //     power: 119,
+  //     size: 12
+  //   })
+  // })
 })

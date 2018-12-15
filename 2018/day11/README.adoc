@@ -7,3 +7,15 @@ Simply `yarn install && yarn solve` in this directory.
 == Tests
 
 Implemented using Jest, run with `yarn test` or `yarn test:watch`.
+
+== Insights
+
+The naive solution for part 2 (variable size squares) is that for each (x,y) loop through every single square size you're trying to check (1 -> 300), figure out the max of that, and compare to every other (x,y) coordinate.
+
+This naive solution takes forever. In my tests, it ran in 672 seconds (11.2 minutes).
+
+The better solution is instead use a https://www.seas.upenn.edu/~cis565/Lectures2011/Lecture15_SAT.pdf[Sum Area Table]. For our purposes, we need to create a new SAT for all (x,y) that conatins the sum of all values to the right and down. Then we loop through the built SAT, figure out the max (x,y) coordinates from the values there and figure out how big the box is that contains it. The size of the box is (width, height) where width = 300 - (x + 1), height = 300 - (y + 1). So the largest the box could be is 300,300 with x,y at 0,0.
+
+TIP: Since we only care about squares (the answer depends on it) a 2nd optimization could be to only check (x,y) coordinates where (300 - x) == 300
+
+After implementing this algorithm my total time to solve dropped to <
