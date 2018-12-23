@@ -1,18 +1,16 @@
 const _ = require('lodash')
 const leftPad = require('left-pad')
 
-export const part1 = input => {
+export const part1And2 = (input, generations) => {
   let parsed = parse(input)
-  // pad the front with 2 on the front and back
-  let currentState = '.....' + parsed.initialState
-  let offset = 5
+  let offset = 0
+  let currentState = parsed.initialState
   console.log(`0: ${currentState}`)
+  console.log(`${JSON.stringify(parsed)}`)
   let latestGen = ''
-  for (let gen = 1; gen <= 20; gen++) {
-    if (currentState.startsWith('#')) {
-      currentState = leftPad(currentState, '.....')
-      offset += 5
-    }
+  for (let gen = 1; gen <= generations; gen++) {
+    currentState = '....' + currentState + '....'
+    offset += 4
     latestGen = ''
     let chars = currentState.split('')
     chars.forEach((c, idx) => {
@@ -27,16 +25,21 @@ export const part1 = input => {
         latestGen += '.'
       }
     })
-    console.log(`${gen}: ${latestGen}`);
-
-    // pad front and back for the next iteration
-    if (latestGen)
-    latestGen = leftPad(latestGen + '..', '..')
 
     currentState = latestGen
   }
-  return latestGen
 
+  let total = 0
+  latestGen.split('').forEach((c, idx) => {
+    // substract off all the characters I added
+    let offsetIndex = idx - offset
+    total += (c == '#' ? offsetIndex : 0)
+  })
+
+  return {
+    final: latestGen,
+    total: total
+  }
 }
 
 export const parse = rawLines => {

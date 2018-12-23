@@ -1,4 +1,4 @@
-import { parse } from './solution.js';
+import { parse, part1And2 } from './solution.js';
 const fs = require('fs')
 
 let input = fs.readFileSync('testinput', 'utf8')
@@ -20,5 +20,6 @@ describe('Parses test input', () => {
   })
 })
 
-describe('Solves samples part 2', () => {
+test('Solves samples part 1', () => {
+  expect(part1And2(input, 20).total).toEqual(325)
 })
