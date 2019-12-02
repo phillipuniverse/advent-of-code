@@ -18,7 +18,7 @@
     "babel-preset-env": "^1.7.0",
     "console.table": "^0.10.0",
     "jest": "23.6.0",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.13"
   },
   "jest": {
     "testPathIgnorePatterns": [
