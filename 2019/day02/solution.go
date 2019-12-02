@@ -20,8 +20,24 @@ func main() {
 	line = strings.TrimSuffix(line, "\n")
 	codes := convertToInts(strings.Split(line, ","))
 
-	log.Printf("Read and converted a line: %v", codes)
+	log.Printf("part1 solution: %d", runProgram(codes))
 
+	codes = convertToInts(strings.Split(line, ","))
+	for noun := 0; noun <= 100; noun++ {
+		for verb := 0; verb <= 100; verb++ {
+			codes[1] = noun
+			codes[2] = verb
+			if runProgram(codes) == 19690720 {
+				log.Printf("part2 noun: %d verb: %d", noun, verb)
+				os.Exit(0)
+			}
+			// reset back to the original
+			codes = convertToInts(strings.Split(line, ","))
+		}
+	}
+}
+
+func runProgram(codes []int) int {
 	i := 0
 	for i < len(codes) {
 		opcode := codes[i]
@@ -42,8 +58,7 @@ func main() {
 			break
 		}
 	}
-
-	log.Printf("Final transformed program: %v", codes)
+	return codes[0]
 }
 
 func convertToInts(strings []string) []int {
