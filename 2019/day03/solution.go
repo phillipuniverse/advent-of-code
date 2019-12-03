@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -18,100 +20,92 @@ func main() {
 	secondLineRaw, _ := reader.ReadString('\n')
 	secondLineRaw = strings.TrimSuffix(secondLineRaw, "\n")
 
-	//solve(firstLineRaw, secondLineRaw)
+	// solvePart1("R8,U5,L5,D3", "U7,R6,D4,L4") -- 6
+	// solvePart1("R75,D30,R83,U83,L12,D49,R71,U7,L72", "U62,R66,U55,R34,D71,R55,D58,R83") -- 159
+	// solvePart1("R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51", "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7") -- 135
 
-	// max == U:7, D:4, L:5, R:8
-	solve("R8,U5,L5,D3", "U7,R6,D4,L4")
+	solvePart1(firstLineRaw, secondLineRaw)
 }
 
-func solve(firstLineRaw string, secondLineRaw string) {
-	max := Maxes{}
-	firstLine := parseLine(firstLineRaw, &max)
-	secondLine := parseLine(secondLineRaw, &max)
+func solvePart1(firstLineRaw string, secondLineRaw string) {
+	firstLine := parseLine(firstLineRaw)
+	secondLine := parseLine(secondLineRaw)
 
-	board, start := createBoard(firstLine, secondLine, max)
+	firstLinePoints := plot(firstLine)
+	duplicates := make(map[string]bool)
+	for _, p := range firstLinePoints {
+		duplicates[toString(p)] = true
+	}
 
-	plot(firstLine, board, start, "F")
-	plot(secondLine, board, start, "S")
+	secondLinePoints := plot(secondLine)
+	intersection := make([]Point, 0)
+	for _, p := range secondLinePoints {
+		if duplicates[toString(p)] {
+			intersection = append(intersection, p)
+		}
+	}
+
+	minimumDistance := math.MaxInt64
+	for _, p := range intersection {
+		distance := int(math.Abs(float64(p.X)) + math.Abs(float64(p.Y)))
+		//fmt.Printf("Distance with point %v is %d\n", toString(p), distance)
+		if distance < minimumDistance {
+			minimumDistance = distance
+		}
+	}
+	fmt.Printf("Minimum intersection distance is %d\n", minimumDistance)
 }
 
-func plot(line []Instruction, board [][]string, start Point, identifier string) {
-	current := Point{start.x, start.y}
+func toString(p Point) string {
+	return fmt.Sprintf("%d,%d", p.X, p.Y)
+}
+
+func plot(line []Instruction) []Point {
+	current := Point{0, 0}
+	points := make([]Point, 0)
 	for _, instr := range line {
-		for i := 1; i < instr.Length; i++ {
-			newX := current.x
-			newY := current.y
+		for i := 0; i < instr.Length; i++ {
+			newX := current.X
+			newY := current.Y
 			if instr.Direction == UP {
-				newY--
-			} else if instr.Direction == DOWN {
 				newY++
+			} else if instr.Direction == DOWN {
+				newY--
 			} else if instr.Direction == LEFT {
 				newX--
 			} else if instr.Direction == RIGHT {
 				newX++
 			}
-			current.x = newX
-			current.y = newY
-
-			val := board[current.y][current.x]
-			if val == "C" || val == identifier {
-				// do nothing, this is myself
-			} else if val == "" {
-				board[current.y][current.x] = identifier
-			} else {
-				board[current.y][current.x] = "B"
-			}
+			current.X = newX
+			current.Y = newY
+			points = append(points, Point{current.X, current.Y})
 		}
 	}
+	return points
 }
 
-func createBoard(firstLine []Instruction, secondLine []Instruction, max Maxes) ([][]string, Point) {
-	width := max.MaxL + max.MaxR + 1
-	height := max.MaxU + max.MaxD + 1
-
-	board := make([][]string, height)
-	for i := range board {
-		board[i] = make([]string, width)
-	}
-	start := Point{max.MaxL - 1, max.MaxU - 1}
-	board[start.y][start.x] = "C"
-	return board, start
-}
-
-func parseLine(raw string, max *Maxes) []Instruction {
+func parseLine(raw string) []Instruction {
 	rawInstructions := strings.Split(raw, ",")
 	instructions := make([]Instruction, 0)
 	for _, rawInstr := range rawInstructions {
-		instruction := parseInstruction(rawInstr, max)
+		instruction := parseInstruction(rawInstr)
 		instructions = append(instructions, instruction)
 	}
 	return instructions
 }
 
-func parseInstruction(raw string, max *Maxes) Instruction {
+func parseInstruction(raw string) Instruction {
 	rawDirection := raw[0]
 	length, _ := strconv.Atoi(raw[1:])
 	var direction Direction
 	if rawDirection == 'U' {
 		direction = UP
-		if length > max.MaxU {
-			max.MaxU = length
-		}
 	} else if rawDirection == 'D' {
 		direction = DOWN
-		if length > max.MaxD {
-			max.MaxD = length
-		}
 	} else if rawDirection == 'L' {
 		direction = LEFT
-		if length > max.MaxL {
-			max.MaxL = length
-		}
 	} else if rawDirection == 'R' {
 		direction = RIGHT
-		if length > max.MaxR {
-			max.MaxR = length
-		}
 	}
 
 	return Instruction{
@@ -121,11 +115,7 @@ func parseInstruction(raw string, max *Maxes) Instruction {
 }
 
 type Point struct {
-	x, y int
-}
-
-type Maxes struct {
-	MaxU, MaxD, MaxL, MaxR int
+	X, Y int
 }
 
 type Instruction struct {
