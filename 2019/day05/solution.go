@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-//func main() {
-//	log.Printf("Instruction: %v", convertToInstruction(1002))
-//}
-
 func main() {
 	file, err := os.Open("input")
 	if err != nil {
@@ -22,27 +18,16 @@ func main() {
 	reader := bufio.NewReader(file)
 	line, _ := reader.ReadString('\n')
 	line = strings.TrimSuffix(line, "\n")
-	codes := convertToInts(strings.Split(line, ","))
-	log.Printf("part1 solution: %d", runProgram(codes))
 
-	//codes = convertToInts(strings.Split(line, ","))
-	//for noun := 0; noun <= 100; noun++ {
-	//	for verb := 0; verb <= 100; verb++ {
-	//		codes[1] = noun
-	//		codes[2] = verb
-	//		if runProgram(codes) == 19690720 {
-	//			log.Printf("part2 noun: %d verb: %d", noun, verb)
-	//			os.Exit(0)
-	//		}
-	//		// reset back to the original
-	//		codes = convertToInts(strings.Split(line, ","))
-	//	}
-	//}
+	log.Printf("part1 solution: %d", runProgram(line, 1))
+	log.Printf("part2 solution: %d", runProgram(line, 5))
 }
 
-func runProgram(codes []int) int {
-	// a bit manual for the first instruction, which is an input instruction that takes a value 1
-	codes[codes[1]] = 1
+func runProgram(line string, input int) int {
+	codes := convertToInts(strings.Split(line, ","))
+
+	// a bit manual for the first instruction, which is an input instruction
+	codes[codes[1]] = input
 	// skip to after the first 2 codes
 	i := 2
 	var diagnosticCode int
@@ -50,7 +35,7 @@ func runProgram(codes []int) int {
 		instruction := convertToInstruction(codes[i])
 		i++
 
-		if instruction.opcode == 1 || instruction.opcode == 2 {
+		if instruction.expectedNumberOfParameters >= 2 {
 			// multiply or add consuming 2 parameters
 			var lOperand int
 			if instruction.param1Mode == 0 {
@@ -68,18 +53,45 @@ func runProgram(codes []int) int {
 			}
 			i++
 
-			whereToStore := codes[i]
-			i++
+			if instruction.expectedNumberOfParameters == 2 {
+				if instruction.opcode == 5 {
+					// jump if non-zero
+					if lOperand != 0 {
+						i = rOperand
+					}
+				} else if instruction.opcode == 6 {
+					// jump if zero
+					if lOperand == 0 {
+						i = rOperand
+					}
+				}
+			} else if instruction.expectedNumberOfParameters == 3 {
+				whereToStore := codes[i]
+				i++
 
-			if instruction.opcode == 1 {
-				codes[whereToStore] = lOperand + rOperand
-			} else {
-				codes[whereToStore] = lOperand * rOperand
+				if instruction.opcode == 1 {
+					codes[whereToStore] = lOperand + rOperand
+				} else if instruction.opcode == 2 {
+					codes[whereToStore] = lOperand * rOperand
+				} else if instruction.opcode == 7 {
+					if lOperand < rOperand {
+						codes[whereToStore] = 1
+					} else {
+						codes[whereToStore] = 0
+					}
+				} else if instruction.opcode == 8 {
+					if lOperand == rOperand {
+						codes[whereToStore] = 1
+					} else {
+						codes[whereToStore] = 0
+					}
+				}
 			}
 		} else if instruction.opcode == 3 {
 			// well there are no other input instructions
 			log.Panicf("We found an input instruction at position %d but should not have", i)
 		} else if instruction.opcode == 4 {
+			// output
 			outputLocation := codes[i]
 			i++
 			diagnosticCode = codes[outputLocation]
@@ -104,11 +116,23 @@ func convertToInstruction(instruction int) Instruction {
 	instruction = instruction / 10
 	param3Mode := instruction % 10
 	instruction = instruction / 10
+
+	var expectedNumberOfParameters int
+	if opcode == 1 || opcode == 2 || opcode == 7 || opcode == 8 {
+		expectedNumberOfParameters = 3
+	} else if opcode == 5 || opcode == 6 {
+		expectedNumberOfParameters = 2
+	} else if opcode == 3 || opcode == 99 {
+		expectedNumberOfParameters = 0
+	} else if opcode == 4 {
+		expectedNumberOfParameters = 1
+	}
 	return Instruction{
 		opcode:     opcode,
 		param1Mode: param1Mode,
 		param2Mode: param2Mode,
 		param3Mode: param3Mode,
+		expectedNumberOfParameters: expectedNumberOfParameters,
 	}
 }
 
@@ -125,5 +149,5 @@ func convertToInts(strings []string) []int {
 }
 
 type Instruction struct {
-	opcode, param1Mode, param2Mode, param3Mode int
+	opcode, param1Mode, param2Mode, param3Mode, expectedNumberOfParameters int
 }
