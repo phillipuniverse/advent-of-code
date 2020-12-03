@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from os import path
 
+from utils import parse_to_lines
+
 
 @dataclass(frozen=True)
 class PasswordData:
@@ -14,7 +16,7 @@ class PasswordData:
         return cls(int(line[0:line.index('-')]),
                    int(line[line.index('-') + 1:line.index(' ')]),
                    line[line.index(':') - 1],
-                   line[line.index(':')+2:-1])
+                   line[line.index(':')+2:])
 
 
 def num_valid_part_1(lines: list[str]) -> int:
@@ -44,8 +46,7 @@ def num_valid_part_2(lines: list[str]) -> int:
 
 
 if __name__ == '__main__':
-    with open(path.join(path.dirname(__file__), 'input/day02-1')) as data:
-        lines = list(data.readlines())
-        print(f"Valid passwords part 1: {num_valid_part_1(lines)}")
-        print(f"Valid passwords part 2: {num_valid_part_2(lines)}")
+    lines = parse_to_lines('02')
+    print(f"Valid passwords part 1: {num_valid_part_1(lines)}")
+    print(f"Valid passwords part 2: {num_valid_part_2(lines)}")
 
