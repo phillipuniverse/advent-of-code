@@ -1,9 +1,10 @@
 from collections import namedtuple
+from functools import reduce
 
 from utils import parse_to_lines
 
 
-def count_trees(map: list[str], slope_increase: (int, int)) -> int:
+def count_trees(mountain: list[str], slope_increase: (int, int)) -> int:
     """
 
     :param map: original map given
@@ -16,9 +17,9 @@ def count_trees(map: list[str], slope_increase: (int, int)) -> int:
     x, y = 0, 0
     trees_encountered = 0
     # Assume same length on every line
-    max_y = len(map[0]) - 1
-    while x < len(map):
-        if map[x][y] == '#':
+    max_y = len(mountain[0]) - 1
+    while x < len(mountain):
+        if mountain[x][y] == '#':
             trees_encountered += 1
 
         x += increase_down
@@ -31,9 +32,19 @@ def count_trees(map: list[str], slope_increase: (int, int)) -> int:
     return trees_encountered
 
 
+def multiply_trees(mountain: list[str], slope_increases: list[(int, int)]) -> int:
+    return reduce(lambda x, y: x*y, [count_trees(mountain, slope) for slope in slope_increases])
+
+
 if __name__ == '__main__':
     lines = parse_to_lines('03')
 
     part1_solution = count_trees(lines, (3, 1))
     print(f"Trees encountered part 1: {part1_solution}")
     assert part1_solution == 216
+    part2_solution = multiply_trees(lines, [(1, 1),
+                                            (3, 1),
+                                            (5, 1),
+                                            (7, 1),
+                                            (1, 2)])
+    print(f"Trees multiplication: {part2_solution}")
