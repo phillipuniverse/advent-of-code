@@ -11,6 +11,7 @@ def valid_height(test):
         (match.group(2) == 'in' and 59 <= int(match.group(1)) <= 76)
     )
 
+
 validations = {
     'byr': lambda test: len(test) == 4 and 1920 <= int(test) <= 2002,
     'iyr': lambda test: len(test) == 4 and 2010 <= int(test) <= 2020,
@@ -48,8 +49,7 @@ def valid_passports(lines: list[str], validate: bool = False) -> int:
             'cid',
         ]
         for part in passport_parts:
-            field = part[0:part.index(':')]
-            val = part[part.index(':')+1:]
+            field, val = part.split(':')
 
             if validate:
                 if validations[field](val):
@@ -59,6 +59,8 @@ def valid_passports(lines: list[str], validate: bool = False) -> int:
 
         if not search_fields or search_fields == ['cid']:
             valid += 1
+            if validate:
+                print(passport_data)
 
         idx += 1
 
