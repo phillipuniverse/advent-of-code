@@ -17,9 +17,9 @@ validations = {
     'iyr': lambda test: len(test) == 4 and 2010 <= int(test) <= 2020,
     'eyr': lambda test: len(test) == 4 and 2020 <= int(test) <= 2030,
     'hgt': lambda test: valid_height(test),
-    'hcl': lambda test: re.match(r'#[0-9a-f]{6}', test),
+    'hcl': lambda test: re.match(r'#[0-9a-f]{6}$', test),
     'ecl': lambda test: test in ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'],
-    'pid': lambda test: re.match(r'[0-9]{9}', test),
+    'pid': lambda test: re.match(r'[0-9]{9}$', test),
     'cid': lambda test: True,
 }
 
@@ -59,8 +59,6 @@ def valid_passports(lines: list[str], validate: bool = False) -> int:
 
         if not search_fields or search_fields == ['cid']:
             valid += 1
-            if validate:
-                print(passport_data)
 
         idx += 1
 
@@ -70,5 +68,10 @@ def valid_passports(lines: list[str], validate: bool = False) -> int:
 if __name__ == '__main__':
     lines = parse_to_lines('04')
 
-    print(f"Number of valid passports part1: {valid_passports(lines)}")
-    print(f"Number of valid passports part2: {valid_passports(lines, True)}")
+    part1 = valid_passports(lines)
+    print(f"Number of valid passports part1: {part1}")
+    assert part1 == 260
+
+    part2 = valid_passports(lines, True)
+    assert part2 == 153
+    print(f"Number of valid passports part2: {part2}")
