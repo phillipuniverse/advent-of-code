@@ -17,9 +17,9 @@ validations = {
     'iyr': lambda test: len(test) == 4 and 2010 <= int(test) <= 2020,
     'eyr': lambda test: len(test) == 4 and 2020 <= int(test) <= 2030,
     'hgt': lambda test: valid_height(test),
-    'hcl': lambda test: re.match(r'#[0-9a-f]{6}$', test),
+    'hcl': lambda test: re.match(r'^#[0-9a-f]{6}$', test),
     'ecl': lambda test: test in ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'],
-    'pid': lambda test: re.match(r'[0-9]{9}$', test),
+    'pid': lambda test: re.match(r'^[0-9]{9}$', test),
     'cid': lambda test: True,
 }
 
