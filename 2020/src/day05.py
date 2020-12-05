@@ -1,4 +1,5 @@
 import re
+from builtins import sorted
 from functools import reduce
 
 from utils import parse_to_lines
@@ -7,6 +8,12 @@ from utils import parse_to_lines
 def highest_seat_id(lines: list[str]):
     return max([seat_id(line) for line in lines])
 
+
+def missing_seat_id(lines: list[str]):
+    seat_ids = sorted([seat_id(line) for line in lines])
+    for idx, sid in enumerate(seat_ids):
+        if idx != 0 and seat_ids[idx-1] != sid - 1:
+            return sid - 1
 
 def seat_id(code: str, start: int = 127) -> int:
     row_id = row(code[0:7])
@@ -50,8 +57,7 @@ if __name__ == '__main__':
 
     part1 = highest_seat_id(lines)
     print(f"Highest seat id: {part1}")
-    assert part1 == 260
+    assert part1 == 904
 
-    # part2 = valid_passports(lines, True)
-    # assert part2 == 153
-    # print(f"Number of valid passports part2: {part2}")
+    part2 = missing_seat_id(lines)
+    print(f"Missing seat id: {part2}")
