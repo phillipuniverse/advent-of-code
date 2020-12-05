@@ -1,4 +1,8 @@
 from builtins import sorted
+from math import (
+    floor,
+    ceil,
+)
 
 from utils import parse_to_lines
 
@@ -28,9 +32,9 @@ def column(col_code: str, max_col: int = 7) -> int:
     while idx < len(col_code) - 1:
         pivot = (maxc + minc) / 2
         if col_code[idx] == 'L':
-            maxc = int(pivot)
+            maxc = floor(pivot)
         elif col_code[idx] == 'R':
-            minc = round(pivot)
+            minc = ceil(pivot)
         idx += 1
 
     return minc if col_code[idx] == 'L' else maxc
@@ -43,9 +47,9 @@ def row(row_code: str, max_row: int = 127) -> int:
     while idx < len(row_code) - 1:
         pivot = (maxr + minr) / 2
         if row_code[idx] == 'F':
-            maxr = int(pivot)
+            maxr = floor(pivot)
         elif row_code[idx] == 'B':
-            minr = round(pivot)
+            minr = ceil(pivot)
         idx += 1
 
     return minr if row_code[idx] == 'F' else maxr
