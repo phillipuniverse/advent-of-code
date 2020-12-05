@@ -1,6 +1,4 @@
-import re
 from builtins import sorted
-from functools import reduce
 
 from utils import parse_to_lines
 
@@ -15,7 +13,8 @@ def missing_seat_id(lines: list[str]):
         if idx != 0 and seat_ids[idx-1] != sid - 1:
             return sid - 1
 
-def seat_id(code: str, start: int = 127) -> int:
+
+def seat_id(code: str) -> int:
     row_id = row(code[0:7])
     column_id = column(code[7:])
 
@@ -23,41 +22,42 @@ def seat_id(code: str, start: int = 127) -> int:
 
 
 def column(col_code: str, max_col: int = 7) -> int:
-    min = 0
-    max = max_col
+    minc = 0
+    maxc = max_col
     idx = 0
     while idx < len(col_code) - 1:
-        pivot = (max + min) / 2
+        pivot = (maxc + minc) / 2
         if col_code[idx] == 'L':
-            max = int(pivot)
+            maxc = int(pivot)
         elif col_code[idx] == 'R':
-            min = round(pivot)
+            minc = round(pivot)
         idx += 1
 
-    return min if col_code[idx] == 'L' else max
+    return minc if col_code[idx] == 'L' else maxc
 
 
 def row(row_code: str, max_row: int = 127) -> int:
-    min = 0
-    max = max_row
+    minr = 0
+    maxr = max_row
     idx = 0
     while idx < len(row_code) - 1:
-        pivot = (max + min) / 2
+        pivot = (maxr + minr) / 2
         if row_code[idx] == 'F':
-            max = int(pivot)
+            maxr = int(pivot)
         elif row_code[idx] == 'B':
-            min = round(pivot)
+            minr = round(pivot)
         idx += 1
 
-    return min if row_code[idx] == 'F' else max
+    return minr if row_code[idx] == 'F' else maxr
 
 
 if __name__ == '__main__':
-    lines = parse_to_lines('05')
+    parsed_input = parse_to_lines('05')
 
-    part1 = highest_seat_id(lines)
+    part1 = highest_seat_id(parsed_input)
     print(f"Highest seat id: {part1}")
     assert part1 == 904
 
-    part2 = missing_seat_id(lines)
+    part2 = missing_seat_id(parsed_input)
     print(f"Missing seat id: {part2}")
+    assert part2 == 669
