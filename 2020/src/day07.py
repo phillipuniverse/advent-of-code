@@ -5,7 +5,17 @@ from typing import Mapping
 from utils import parse_to_lines
 
 
-def parse_line(line: str) -> Mapping[str, list[tuple[int, str]]]:
+Ruleset = Mapping[str, list[tuple[int, str]]]
+
+
+def create_ruleset(parsed_input: list[str]) -> Ruleset:
+    rules = dict()
+    for line in parsed_input:
+        rules.update(parse_line(line))
+    return rules
+
+
+def parse_line(line: str) -> Ruleset:
     nests = line.split(', ')
     parent_bag, contains = nests[0].split(' bags contain ')
     bag_nesting = defaultdict(list)
@@ -20,35 +30,40 @@ def parse_line(line: str) -> Mapping[str, list[tuple[int, str]]]:
     return bag_nesting
 
 
-def num_outermost_contained_bag(lines: list[str], search_bag: str = 'shiny gold') -> int:
-    rules = dict()
-    for line in lines:
-        rules.update(parse_line(line))
+def flattened_children(parent: str, rules: Ruleset) -> list[tuple[int, str]]:
+    if not rules[parent]:
+        return []
+    children = []
+    for child in rules[parent]:
+        children += [child] + flattened_children(child[1], rules)
+    return children
 
+
+def num_outermost_contained_bag(rules, search_bag: str = 'shiny gold') -> int:
     toplevel_bag_count = 0
     for key, val in rules.items():
-
-        def all_children(parent) -> list:
-            if not rules[parent]:
-                return []
-            children = []
-            for child in rules[parent]:
-                children += [child[1]] + all_children(child[1])
-            return children
-
-        children = all_children(key)
-        if search_bag in children:
+        children = flattened_children(key, rules)
+        if search_bag in [bagname for count, bagname in children]:
             toplevel_bag_count += 1
 
     return toplevel_bag_count
 
 
+def count_contained_bags(parent: str, rules: Ruleset, multiplier: int = 1) -> int:
+    if not rules[parent]:
+        return 0
+    child_bag_sums = 0
+    for child in rules[parent]:
+        child_bag_sums += multiplier * child[0] + multiplier * count_contained_bags(child[1], rules, child[0])
+    return child_bag_sums
+
+
 if __name__ == '__main__':
-    parsed_input = parse_to_lines('07')
-    part1 = num_outermost_contained_bag(parsed_input)
+    ruleset = create_ruleset(parse_to_lines('07'))
+    part1 = num_outermost_contained_bag(ruleset)
     print(f"Part 1: {part1}")
-    # assert part1 == 6273
-    #
-    # part2 = yes_answers_in_groups(parsed_input, part2_answer_counter)
-    # print(f"Part 2: {part2}")
+    assert part1 == 246
+
+    part2 = count_contained_bags('shiny gold', ruleset)
+    print(f"Part 2: {part2}")
     # assert part2 == 3254
