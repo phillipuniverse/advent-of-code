@@ -21,3 +21,7 @@ bin/
 rebel.xml
 rebel-remote.xml
 *.rebel*
+
+# Python
+__pycache__
+*.pyc
